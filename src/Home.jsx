@@ -6,11 +6,14 @@ import homeimg from "../public/home.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
+
+
+
 const categories = [
-  "Graphic Design",
-  "UI/UX Design",
-  "Branding",
-  "Social Media",
+  "HTML & CSS",
+  "JavaScript",
+  "Java & Android",
+  "SQL & Firebase",
 ];
 
 export const Home = () => {
