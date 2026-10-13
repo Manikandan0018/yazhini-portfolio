@@ -1,3 +1,4 @@
+
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -5,40 +6,48 @@ import { Split } from "./utils/Split";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ================= DATA (from your resume) ================= */
+/* ================= SKILLS FROM RESUME ================= */
+
 const skills = [
   {
-    name: "HTML & CSS",
-    desc: "Creating responsive and user-friendly web pages.",
+    name: "PHP",
+    desc: "Developing and maintaining dynamic web applications and backend functionality.",
     tone: "bg-white text-black",
   },
   {
-    name: "JavaScript",
-    desc: "DOM manipulation, event handling and building interactive web features.",
+    name: "Laravel",
+    desc: "Building and maintaining web applications using the Laravel framework.",
     tone: "bg-neutral-200 text-black",
   },
   {
-    name: "Java",
-    desc: "Strong grasp of OOP concepts and backend code for mobile applications.",
-    tone: "bg-neutral-400 text-black",
+    name: "CodeIgniter",
+    desc: "Working with PHP-based web applications and backend features.",
+    tone: "bg-neutral-300 text-black",
   },
   {
-    name: "XML",
-    desc: "Data representation.",
+    name: "REST APIs",
+    desc: "Integrating APIs to connect web applications with external services.",
+    tone: "bg-neutral-800 text-white",
+  },
+  {
+    name: "HTML, CSS & JavaScript",
+    desc: "Building web interfaces and supporting interactive website functionality.",
     tone: "bg-neutral-700 text-white",
   },
   {
-    name: "SQL",
-    desc: "Designing, querying and optimizing relational databases.",
-    tone: "bg-neutral-900 text-white border border-white/30",
+    name: "MySQL & SQL",
+    desc: "Working with databases, queries, and data-driven application functionality.",
+    tone: "bg-neutral-900 text-white border border-white/20",
   },
 ];
 
 const otherSkills = [
-  "MS Word",
-  "MS Excel",
-  "MS PowerPoint",
-  "Effective Communication",
+  "CMS Projects",
+  "E-commerce Websites",
+  "Admin Panels",
+  "XAMPP",
+  "Visual Studio Code",
+  "Communication",
   "Teamwork",
   "Problem Solving",
   "Time Management",
@@ -49,203 +58,143 @@ const education = [
     course: "MCA",
     school: "Puducherry Technological University",
     year: "2025",
-    end: 9.32,
-    dec: 2,
+    score: "9.32",
     label: "CGPA",
-    suffix: "",
   },
   {
     course: "B.Sc. Computer Science",
-    school: "Bharathidasan Govt. College for Women",
+    school: "Bharathidasan Government College for Women",
     year: "2022",
-    end: 8.19,
-    dec: 2,
+    score: "8.19",
     label: "CGPA",
-    suffix: "",
   },
   {
     course: "HSC (12th)",
-    school: "Thiruvalluvar Govt. Girls Hr. Sec. School",
+    school: "Thiruvalluvar Government Girls Higher Secondary School",
     year: "2019",
-    end: 73.5,
-    dec: 1,
+    score: "73.5%",
     label: "Score",
-    suffix: "%",
   },
 ];
 
-/* ================= Section ================= */
+/* ================= COMPONENT ================= */
+
 export const SkillsEducation = () => {
   const root = useRef(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const toggle = "play reverse play reverse"; // scroll down = play, scroll up = reverse
+      const toggle = "play reverse play reverse";
 
-      /* ---------- SKILLS heading: letters pop in randomly (elastic) ---------- */
+      // Section headings
+      gsap.utils.toArray(".skills-title, .edu-title").forEach((title) => {
+        gsap.fromTo(
+          title.querySelectorAll(".letter"),
+          {
+            y: 25,
+            opacity: 0,
+            rotateX: -45,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            duration: 0.75,
+            stagger: 0.025,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: title,
+              start: "top 88%",
+              toggleActions: toggle,
+            },
+          }
+        );
+      });
+
+      // Intro text
+      gsap.utils.toArray(".section-intro").forEach((item) => {
+        gsap.fromTo(
+          item,
+          { y: 20, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.7,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: item,
+              start: "top 92%",
+              toggleActions: toggle,
+            },
+          }
+        );
+      });
+
+      // Skill cards
       gsap.fromTo(
-        ".skills-title .letter",
-        { scale: 0, opacity: 0, rotate: -30 },
+        ".s-card",
+        { y: 35, opacity: 0 },
         {
-          scale: 1,
+          y: 0,
           opacity: 1,
-          rotate: 0,
-          duration: 1,
-          ease: "elastic.out(1, 0.5)",
-          stagger: { each: 0.05, from: "random" },
+          duration: 0.65,
+          stagger: 0.1,
+          ease: "power3.out",
           scrollTrigger: {
-            trigger: ".skills-title",
+            trigger: ".skills-grid",
             start: "top 85%",
             toggleActions: toggle,
           },
-        },
+        }
       );
 
-      /* ---------- SKILLS: pinned stacking cards ---------- */
-      const cards = gsap.utils.toArray(".s-card");
-      const stack = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".s-pin",
-          start: "top top",
-          end: () => `+=${cards.length * 80}%`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-      cards.forEach((card, i) => {
-        if (i === 0) return;
-        stack
-          .fromTo(
-            card,
-            { yPercent: 115, rotate: i % 2 ? 5 : -5 },
-            { yPercent: 0, rotate: 0, ease: "none", duration: 1 },
-          )
-          .to(
-            cards[i - 1],
-            { scale: 0.92, opacity: 0.35, ease: "none", duration: 1 },
-            "<",
-          );
-      });
-      // progress bar for the stack
-      stack.fromTo(
-        ".s-progress",
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          ease: "none",
-          duration: stack.duration(),
-          transformOrigin: "top center",
-        },
-        0,
-      );
-
-      /* ---------- OTHER SKILLS: two marquee rows, opposite directions ---------- */
+      // Other skill chips
       gsap.fromTo(
-        ".row-a",
-        { xPercent: 0 },
+        ".skill-chip",
+        { y: 15, opacity: 0 },
         {
-          xPercent: -35,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".chips",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        },
-      );
-      gsap.fromTo(
-        ".row-b",
-        { xPercent: -35 },
-        {
-          xPercent: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".chips",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        },
-      );
-
-      /* ---------- EDUCATION heading: 3D letter flip from the centre ---------- */
-      gsap.fromTo(
-        ".edu-title .letter",
-        { rotationX: -90, opacity: 0, transformOrigin: "50% 100%" },
-        {
-          rotationX: 0,
+          y: 0,
           opacity: 1,
-          duration: 0.9,
-          ease: "back.out(1.7)",
-          stagger: { each: 0.05, from: "center" },
+          duration: 0.45,
+          stagger: 0.045,
+          ease: "power2.out",
           scrollTrigger: {
-            trigger: ".edu-title",
-            start: "top 85%",
+            trigger: ".other-skills",
+            start: "top 88%",
             toggleActions: toggle,
           },
-        },
+        }
       );
 
-      /* ---------- EDUCATION: timeline line draws as you scroll ---------- */
-      gsap.fromTo(
-        ".edu-line",
-        { scaleY: 0 },
-        {
-          scaleY: 1,
-          ease: "none",
-          transformOrigin: "top center",
-          scrollTrigger: {
-            trigger: ".timeline",
-            start: "top 70%",
-            end: "bottom 70%",
-            scrub: 1,
-          },
-        },
-      );
-
+      // Education cards
       gsap.utils.toArray(".edu-row").forEach((row, i) => {
-        const fromX = i % 2 === 0 ? -100 : 100;
-        const st = { trigger: row, start: "top 82%", toggleActions: toggle };
-
         gsap.fromTo(
           row.querySelector(".edu-card"),
-          { x: fromX, opacity: 0, rotateY: i % 2 === 0 ? 25 : -25 },
+          {
+            x: i % 2 === 0 ? -30 : 30,
+            y: 15,
+            opacity: 0,
+          },
           {
             x: 0,
+            y: 0,
             opacity: 1,
-            rotateY: 0,
-            duration: 1,
+            duration: 0.75,
             ease: "power3.out",
-            scrollTrigger: st,
-          },
+            scrollTrigger: {
+              trigger: row,
+              start: "top 88%",
+              toggleActions: toggle,
+            },
+          }
         );
-        gsap.fromTo(
-          row.querySelector(".edu-dot"),
-          { scale: 0 },
-          { scale: 1, duration: 0.6, ease: "back.out(3)", scrollTrigger: st },
-        );
-
-        // CGPA / percentage count-up
-        const el = row.querySelector(".count");
-        const obj = { v: 0 };
-        gsap.to(obj, {
-          v: parseFloat(el.dataset.end),
-          duration: 1.8,
-          ease: "power2.out",
-          onUpdate: () => {
-            el.textContent = obj.v.toFixed(parseInt(el.dataset.dec, 10));
-          },
-          scrollTrigger: st,
-        });
       });
 
-      /* ---------- Background glow parallax ---------- */
+      // Background glow
       gsap.to(".se-glow", {
-        yPercent: 80,
-        xPercent: 20,
-        scale: 1.3,
+        yPercent: 20,
+        xPercent: -8,
+        scale: 1.1,
         ease: "none",
         scrollTrigger: {
           trigger: root.current,
@@ -257,166 +206,193 @@ export const SkillsEducation = () => {
     }, root);
 
     const refresh = () => ScrollTrigger.refresh();
+
     window.addEventListener("load", refresh);
+
     return () => {
       window.removeEventListener("load", refresh);
       ctx.revert();
     };
   }, []);
 
-  /* chip hover */
-  const chipEnter = (e) =>
+  const chipEnter = (e) => {
     gsap.to(e.currentTarget, {
-      backgroundColor: "#fff",
-      color: "#000",
-      scale: 1.08,
-      duration: 0.3,
+      backgroundColor: "#ffffff",
+      color: "#000000",
+      borderColor: "#ffffff",
+      scale: 1.03,
+      duration: 0.2,
+      ease: "power2.out",
     });
-  const chipLeave = (e) =>
+  };
+
+  const chipLeave = (e) => {
     gsap.to(e.currentTarget, {
       backgroundColor: "rgba(255,255,255,0)",
-      color: "#fff",
+      color: "#ffffff",
+      borderColor: "rgba(255,255,255,0.3)",
       scale: 1,
-      duration: 0.3,
+      duration: 0.2,
+      ease: "power2.out",
     });
-
-  const marquee = [...otherSkills, ...otherSkills, ...otherSkills];
+  };
 
   return (
     <section
       ref={root}
       id="skills"
-      className="relative w-full overflow-hidden bg-[#0a0a0a] text-white"
+      className="relative isolate w-full overflow-hidden bg-[#0a0a0a] text-white"
     >
+      {/* Background glow */}
       <div
-        className="se-glow pointer-events-none absolute -right-40 top-0 h-[900px] w-[900px] rounded-full opacity-50"
+        className="se-glow pointer-events-none absolute -right-32 top-0 -z-10 h-[450px] w-[450px] rounded-full opacity-40 sm:h-[600px] sm:w-[600px]"
         style={{
           background:
-            "radial-gradient(circle, rgba(255,255,255,0.14) 0%, transparent 65%)",
+            "radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 40%, transparent 70%)",
         }}
       />
 
-      {/* ================= SKILLS (pinned stacking cards) ================= */}
-      <div className="s-pin relative flex min-h-screen items-center px-6 py-10 sm:px-10 lg:px-16">
-        <div className="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
-          <div>
-            <p className="mb-2 text-sm uppercase tracking-[0.3em] text-white/50">
-              What I know
-            </p>
-            <h2 className="skills-title text-6xl font-extrabold uppercase leading-none sm:text-8xl lg:text-9xl">
-              <Split text="Skills" />
-            </h2>
-            <p className="mt-4 max-w-md text-base text-white/60 sm:text-xl">
-              Scroll to flip through my technical stack.
+      {/* ================= TECHNICAL SKILLS ================= */}
+
+      <div className="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
+        <div className="mb-8 sm:mb-10">
+          <p className="section-intro mb-2 text-xs uppercase tracking-[0.22em] text-white/50 sm:text-sm sm:tracking-[0.3em]">
+            Technical expertise
+          </p>
+
+          <h2 className="skills-title text-4xl font-extrabold uppercase leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            <Split text="My Skills" />
+          </h2>
+
+          <p className="section-intro mt-3 max-w-2xl text-sm leading-6 text-white/65 sm:text-base sm:leading-7">
+            My technical skills and experience in developing, integrating,
+            and maintaining web applications.
+          </p>
+        </div>
+
+        {/* Responsive skills grid */}
+        <div className="skills-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {skills.map((skill, i) => (
+            <article
+              key={skill.name}
+              className={`s-card group flex min-h-[175px] flex-col justify-between rounded-2xl p-5 transition-transform duration-300 hover:-translate-y-1 sm:min-h-[190px] sm:p-6 ${skill.tone}`}
+            >
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <span className="text-xs font-medium opacity-60 sm:text-sm">
+                  SKILL {String(i + 1).padStart(2, "0")}
+                </span>
+
+                <span className="text-lg opacity-50 transition-transform duration-300 group-hover:translate-x-1">
+                  ↗
+                </span>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold leading-snug sm:text-2xl">
+                  {skill.name}
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 opacity-75 sm:text-base sm:leading-6">
+                  {skill.desc}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* ================= OTHER SKILLS ================= */}
+
+        <div className="other-skills mt-12 border-t border-white/15 pt-8 sm:mt-14 sm:pt-10">
+          <div className="mb-5">
+            <h3 className="text-xl font-semibold sm:text-2xl">
+              Tools & Other Skills
+            </h3>
+
+            <p className="section-intro mt-2 text-sm leading-6 text-white/60 sm:text-base">
+              Project areas, development tools, and professional strengths
+              listed in my resume.
             </p>
           </div>
 
-          <div className="relative flex gap-4">
-            {/* vertical progress */}
-            <div className="relative hidden w-[2px] bg-white/15 sm:block">
-              <div className="s-progress absolute inset-0 origin-top bg-white" />
-            </div>
-
-            {/* stacked cards */}
-            <div className="relative h-[55vh] w-full lg:h-[60vh]">
-              {skills.map((s, i) => (
-                <div
-                  key={s.name}
-                  className={`s-card absolute inset-0 flex flex-col justify-between rounded-3xl p-6 shadow-2xl sm:p-10 ${s.tone}`}
-                  style={{ zIndex: i + 1 }}
-                >
-                  <span className="text-sm font-semibold opacity-60">
-                    {String(i + 1).padStart(2, "0")} /{" "}
-                    {String(skills.length).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <h3 className="text-4xl font-extrabold sm:text-6xl">
-                      {s.name}
-                    </h3>
-                    <p className="mt-3 max-w-md text-base opacity-75 sm:text-xl">
-                      {s.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-2.5 sm:gap-3">
+            {otherSkills.map((skill) => (
+              <span
+                key={skill}
+                onMouseEnter={chipEnter}
+                onMouseLeave={chipLeave}
+                className="skill-chip cursor-default rounded-full border border-white/30 px-3.5 py-2 text-sm leading-5 text-white/90 sm:px-4 sm:py-2.5 sm:text-base"
+              >
+                {skill}
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* ================= OTHER SKILLS (opposite-direction marquees) ================= */}
-      <div className="chips relative space-y-5 overflow-hidden py-20">
-        {["row-a", "row-b"].map((r, idx) => (
-          <div key={r} className={`${r} flex w-max gap-4`}>
-            {(idx ? [...marquee].reverse() : marquee).map((c, i) => (
-              <span
-                key={i}
-                onMouseEnter={chipEnter}
-                onMouseLeave={chipLeave}
-                className="cursor-pointer whitespace-nowrap rounded-full border border-white/60 px-6 py-3 text-lg sm:px-10 sm:py-4 sm:text-3xl"
-              >
-                {c}
-              </span>
-            ))}
-          </div>
-        ))}
-      </div>
+      {/* ================= EDUCATION ================= */}
 
-      {/* ================= EDUCATION (timeline) ================= */}
-      <div id="education" className="relative px-6 py-24 sm:px-10 lg:px-16">
-        <p className="mb-2 text-sm uppercase tracking-[0.3em] text-white/50">
-          My journey
-        </p>
-        <h2
-          className="edu-title mb-16 text-6xl font-extrabold uppercase leading-none sm:text-8xl lg:text-9xl"
-          style={{ perspective: 800 }}
-        >
-          <Split text="Education" />
-        </h2>
+      <div
+        id="education"
+        className="mx-auto w-full max-w-7xl px-5 pb-16 pt-2 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24"
+      >
+        <div className="mb-8 sm:mb-10">
+          <p className="section-intro mb-2 text-xs uppercase tracking-[0.22em] text-white/50 sm:text-sm sm:tracking-[0.3em]">
+            Academic background
+          </p>
 
-        <div className="timeline relative">
-          {/* line */}
-          <div className="absolute left-4 top-0 h-full w-px bg-white/15 lg:left-1/2" />
-          <div className="edu-line absolute left-4 top-0 h-full w-px origin-top bg-white lg:left-1/2" />
+          <h2 className="edu-title text-4xl font-extrabold uppercase leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            <Split text="Education" />
+          </h2>
 
-          <div className="space-y-12 lg:space-y-20">
-            {education.map((e, i) => (
-              <div
-                key={e.course}
-                className="edu-row relative grid grid-cols-1 lg:grid-cols-2"
-                style={{ perspective: 1000 }}
-              >
-                <span className="edu-dot absolute left-4 top-10 -ml-2 h-4 w-4 rounded-full bg-white ring-8 ring-[#0a0a0a] lg:left-1/2" />
+          <p className="section-intro mt-3 max-w-2xl text-sm leading-6 text-white/65 sm:text-base sm:leading-7">
+            My academic journey, qualifications, and achievements.
+          </p>
+        </div>
 
-                <div
-                  className={`edu-card pl-12 lg:pl-0 ${
-                    i % 2 === 0
-                      ? "lg:pr-16 lg:text-right"
-                      : "lg:col-start-2 lg:pl-16"
-                  }`}
-                >
-                  <span className="inline-block rounded-full border border-white/70 px-4 py-1 text-xs uppercase tracking-widest">
-                    {e.year}
-                  </span>
-                  <h3 className="mt-3 text-3xl font-extrabold sm:text-5xl">
-                    {e.course}
-                  </h3>
-                  <p className="mt-2 text-base text-white/70 sm:text-xl">
-                    {e.school}
-                  </p>
-                  <p className="mt-4 text-white/50">{e.label}</p>
-                  <p className="text-6xl font-extrabold sm:text-8xl">
-                    <span className="count" data-end={e.end} data-dec={e.dec}>
-                      0
+        {/* Responsive education cards */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {education.map((item) => (
+            <article
+              key={item.course}
+              className="edu-row min-w-0"
+            >
+              <div className="edu-card flex h-full min-h-[190px] flex-col justify-between rounded-2xl border border-white/15 bg-white/[0.035] p-5 transition-colors duration-300 hover:border-white/40 hover:bg-white/[0.06] sm:min-h-[210px] sm:p-6">
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="rounded-full border border-white/30 px-3 py-1 text-xs text-white/70 sm:text-sm">
+                      {item.year}
                     </span>
-                    {e.suffix}
+
+                    <span className="text-xs uppercase tracking-wider text-white/50 sm:text-sm">
+                      {item.label}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-5 text-xl font-bold leading-snug sm:text-2xl">
+                    {item.course}
+                  </h3>
+
+                  <p className="mt-2 break-words text-sm leading-6 text-white/60 sm:text-base">
+                    {item.school}
                   </p>
                 </div>
+
+                <div className="mt-5 flex items-end justify-between gap-3 border-t border-white/10 pt-4">
+                  <span className="text-sm text-white/50">
+                    {item.label}
+                  </span>
+
+                  <span className="text-3xl font-bold tracking-tight sm:text-4xl">
+                    {item.score}
+                  </span>
+                </div>
               </div>
-            ))}
-          </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
   );
 };
+
+export default SkillsEducation;

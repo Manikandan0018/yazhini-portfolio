@@ -1,3 +1,4 @@
+
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,396 +13,269 @@ import namImg from "../public/nam.png";
 import coImg from "../public/co.png";
 import waterImg from "../public/water.png";
 import chriImg from "../public/chri.png";
+import microcoreresearch from "../public/microcoreresearch.png";
+import segnusmediloids from "../public/segnusmediloids.png";
+import thiruppugazhbiotech from "../public/thiruppugazhbiotech.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ================= DATA ================= */
-const featured = {
-  title: "Green Flyers",
-  tag: "API Integration",
-  desc: "A platform built around API integrations: live data, secure endpoints and a smooth user experience.",
-  url: "https://greenflyers.club/",
-  img: greenImg,
-};
+/* ================= PROJECT DATA ================= */
 
-const webProjects = [
+const categories = [
   {
-    title: "Cooper Elevators",
-    tag: "Corporate Website",
-    url: "https://www.cooperelevators.com/",
-    img: cooperImg,
+    id: "api",
+    title: "API Integration",
+    subtitle: "Connected experiences",
+    projects: [
+      {
+        title: "Green Flyers",
+        tag: "API Integration",
+        desc: "A platform focused on API integrations and a smooth user experience.",
+        url: "https://greenflyers.club/",
+        img: greenImg,
+      },
+    ],
   },
   {
-    title: "Circuit Brilliance",
-    tag: "Business Website",
-    url: "https://circuitbrilliance.com/",
-    img: cirImg,
+    id: "business",
+    title: "Corporate & Business",
+    subtitle: "Professional digital presence",
+    projects: [
+      {
+        title: "Cooper Elevators",
+        tag: "Corporate Website",
+        url: "https://www.cooperelevators.com/",
+        img: cooperImg,
+      },
+      {
+        title: "Circuit Brilliance",
+        tag: "Business Website",
+        url: "https://circuitbrilliance.com/",
+        img: cirImg,
+      },
+      {
+        title: "Wings Job Consultancy",
+        tag: "Consultancy Website",
+        url: "https://www.wingsjobconsultancyservices.com/",
+        img: wingImg,
+      },
+      {
+        title: "Cross Survey & Consultants",
+        tag: "Corporate Website",
+        url: "https://www.crosssurveyandconsultants.com/",
+        img: crosImg,
+      },
+      {
+        title: "Krish Global Solutions",
+        tag: "Business Website",
+        url: "https://krishglobalsolutions.com/",
+        img: krishImg,
+      },
+      {
+        title: "Thamizh Perarasu Katchi",
+        tag: "Political Website",
+        url: "https://www.thamizhperarasukatchi.com/",
+        img: namImg,
+      },
+      {
+        title: "Cogent Tech Solutions",
+        tag: "IT Company Website",
+        url: "https://www.cogenttechsolutions.in/",
+        img: coImg,
+      },
+    ],
   },
   {
-    title: "Wings Job Consultancy",
-    tag: "Consultancy Website",
-    url: "https://www.wingsjobconsultancyservices.com/",
-    img: wingImg,
+    id: "healthcare",
+    title: "Healthcare & Biotech",
+    subtitle: "Research, healthcare and pharmaceutical websites",
+    projects: [
+      {
+        title: "Microcore Research",
+        tag: "Biotech & Research",
+        url: "https://www.microcoreresearch.com/",
+        img: microcoreresearch,
+      },
+      {
+        title: "Segnus Mediloids",
+        tag: "Pharmaceutical Website",
+        url: "https://www.segnusmediloids.com/",
+        img: segnusmediloids,
+      },
+      {
+        title: "Thiruppugazh Biotech",
+        tag: "Biotechnology Website",
+        url: "https://thiruppugazhbiotech.com/",
+        img: thiruppugazhbiotech,
+      },
+      {
+        title: "Espure",
+        tag: "Epsure water solution",
+        url: "https://www.espure.in/",
+        img: waterImg,
+      },
+    ],
   },
   {
-    title: "Cross Survey & Consultants",
-    tag: "Corporate Website",
-    url: "https://www.crosssurveyandconsultants.com/",
-    img: crosImg,
-  },
-  {
-    title: "Krish Global Solutions",
-    tag: "Business Website",
-    url: "https://krishglobalsolutions.com/",
-    img: krishImg,
-  },
-  {
-    title: "Thamizh Perarasu Katchi",
-    tag: "Political Party Website",
-    url: "https://www.thamizhperarasukatchi.com/",
-    img: namImg,
-  },
-  {
-    title: "Cogent Tech Solutions",
-    tag: "IT Company Website",
-    url: "https://www.cogenttechsolutions.in/",
-    img: coImg,
+    id: "ecommerce",
+    title: "E-commerce",
+    subtitle: "Online shopping experiences",
+    projects: [
+      {
+        title: "Christian Books World",
+        tag: "Online Book Store",
+        url: "https://www.christianbooksworld.com/",
+        img: chriImg,
+      },
+    ],
   },
 ];
 
-const ecommerce = [
-  {
-    title: "Espure",
-    url: "https://www.espure.in/",
-    img: waterImg,
-  },
-  {
-    title: "Christian Books World",
-    url: "https://www.christianbooksworld.com/",
-    img: chriImg,
-  },
-];
+/* ================= ANIMATED PROJECT CARD ================= */
 
-/* ...the rest of your file (wave, Split, Card, Projects) stays exactly the same... */
+const ProjectCard = ({ project, index }) => {
+  const cardRef = useRef(null);
+  const imageRef = useRef(null);
 
-/* ================= Letter wave (hover) ================= */
-const wave = (e) => {
-  const el = e.currentTarget;
-  const letters = Array.from(el.closest(".split").querySelectorAll(".letter"));
-  const idx = letters.indexOf(el);
-  letters.forEach((l, i) => {
-    const d = Math.abs(i - idx);
-    if (d > 3) return;
-    gsap
-      .timeline()
-      .to(l, {
-        y: -(20 - d * 5),
-        duration: 0.2,
-        delay: d * 0.045,
-        ease: "power2.out",
-        overwrite: "auto",
-      })
-      .to(l, { y: 0, duration: 0.7, ease: "elastic.out(1, 0.35)" });
-  });
-};
+  const handleMouseEnter = () => {
+    if (window.matchMedia("(hover: hover)").matches) {
+      gsap.to(imageRef.current, {
+        scale: 1.055,
+        duration: 0.55,
+        ease: "power3.out",
+      });
+    }
+  };
 
-const Split = ({ text, className = "" }) => (
-  <span className={`split ${className}`} aria-label={text}>
-    {text.split(" ").map((word, w) => (
-      <React.Fragment key={w}>
-        <span className="inline-block whitespace-nowrap" aria-hidden="true">
-          {word.split("").map((ch, i) => (
-            <span
-              key={i}
-              onMouseEnter={wave}
-              className="letter inline-block cursor-default will-change-transform"
-            >
-              {ch}
-            </span>
-          ))}
-        </span>{" "}
-      </React.Fragment>
-    ))}
-  </span>
-);
-
-/* ================= Project card (image reveal + cursor-follow "View" button) ================= */
-const Card = ({
-  p,
-  index,
-  className = "",
-  aspect = "aspect-[4/3]",
-  cardClass = "p-card",
-}) => {
-  const btn = useRef(null);
-
-  const onEnter = () =>
-    gsap.to(btn.current, {
+  const handleMouseLeave = () => {
+    gsap.to(imageRef.current, {
       scale: 1,
-      opacity: 1,
-      duration: 0.3,
-      ease: "back.out(2)",
-    });
-  const onLeave = () =>
-    gsap.to(btn.current, { scale: 0, opacity: 0, duration: 0.25 });
-  const onMove = (e) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    gsap.to(btn.current, {
-      x: e.clientX - r.left,
-      y: e.clientY - r.top,
-      duration: 0.4,
+      duration: 0.45,
       ease: "power3.out",
     });
   };
 
   return (
     <a
-      href={p.url}
+      ref={cardRef}
+      href={project.url}
       target="_blank"
-      rel="noreferrer"
-      className={`${cardClass} group block ${className}`}
+      rel="noopener noreferrer"
+      aria-label={`Visit ${project.title} website`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="project-card group block min-w-0"
     >
-      <div
-        onMouseEnter={onEnter}
-        onMouseLeave={onLeave}
-        onMouseMove={onMove}
-        className={`img-mask relative w-full overflow-hidden rounded-2xl bg-neutral-900 ${aspect}`}
-      >
-        <div className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-110">
-          <img
-            src={p.img}
-            alt={p.title}
-            className="p-img h-full w-[125%] max-w-none -ml-[12%] object-cover"
-          />
+      {/* Project image */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-neutral-900 sm:rounded-2xl">
+        <img
+          ref={imageRef}
+          src={project.img}
+          alt={`${project.title} website preview`}
+          loading="lazy"
+          className="h-full w-full object-cover object-center"
+        />
+
+        {/* Hover overlay */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/25">
+          <span className="translate-y-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            Visit Website ↗
+          </span>
         </div>
 
-        {/* Cursor-follow button */}
-        <div
-          ref={btn}
-          className="pointer-events-none absolute left-0 top-0 flex h-20 w-20 items-center justify-center rounded-full bg-white text-xs font-semibold text-black opacity-0"
-          style={{ margin: "-40px 0 0 -40px", transform: "scale(0)" }}
-        >
-          View ↗
-        </div>
+        {/* Project number */}
+        <span className="absolute right-3 top-3 rounded-full border border-white/30 bg-black/50 px-3 py-1 text-xs text-white backdrop-blur-sm">
+          {String(index + 1).padStart(2, "0")}
+        </span>
       </div>
 
-      <div className="p-info mt-4 flex items-end justify-between gap-4">
-        <div>
-          <p className="text-xs uppercase tracking-widest text-white/50">
-            {p.tag}
+      {/* Project information */}
+      <div className="mt-3 flex items-start justify-between gap-3 sm:mt-4">
+        <div className="min-w-0">
+          <p className="mb-1 text-xs font-medium uppercase tracking-wider text-white/50 sm:text-sm">
+            {project.tag}
           </p>
-          <h4 className="text-xl font-bold sm:text-2xl lg:text-3xl">
-            {p.title}
+
+          <h4 className="text-base font-semibold leading-snug text-white transition-colors duration-300 group-hover:text-white/70 sm:text-lg lg:text-xl">
+            {project.title}
           </h4>
         </div>
-        <span className="text-sm text-white/40">
-          {String(index + 1).padStart(2, "0")}
+
+        <span className="mt-1 shrink-0 text-lg text-white/50 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white">
+          ↗
         </span>
       </div>
     </a>
   );
 };
 
-/* ================= Section ================= */
+/* ================= PROJECTS SECTION ================= */
+
 export const Projects = () => {
   const root = useRef(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const toggle = "play reverse play reverse"; // scroll down = play, scroll up = reverse
-
-      /* ---- 1) Headings: letters rise one by one ---- */
-      gsap.utils.toArray(".reveal-title").forEach((t) => {
-        gsap.fromTo(
-          t.querySelectorAll(".letter"),
-          { y: 80, opacity: 0, rotate: 8 },
-          {
-            y: 0,
-            opacity: 1,
-            rotate: 0,
-            duration: 0.9,
-            stagger: 0.03,
-            ease: "back.out(1.6)",
-            scrollTrigger: {
-              trigger: t,
-              start: "top 85%",
-              toggleActions: toggle,
-            },
-          },
-        );
-      });
-
-      /* ---- 2) Featured (Green Flyers): mask reveal + parallax ---- */
+      // Intro animation
       gsap.fromTo(
-        ".feat-mask",
-        { clipPath: "inset(100% 0% 0% 0%)" },
-        {
-          clipPath: "inset(0% 0% 0% 0%)",
-          duration: 1.4,
-          ease: "power4.inOut",
-          scrollTrigger: {
-            trigger: ".feat",
-            start: "top 75%",
-            toggleActions: toggle,
-          },
-        },
-      );
-      gsap.fromTo(
-        ".feat-img",
-        { scale: 1.35, yPercent: -8 },
-        {
-          scale: 1.1,
-          yPercent: 8,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".feat",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        },
-      );
-      gsap.fromTo(
-        ".feat-info > *",
-        { y: 50, opacity: 0 },
+        ".projects-intro > *",
+        { y: 25, opacity: 0 },
         {
           y: 0,
           opacity: 1,
+          duration: 0.7,
           stagger: 0.12,
-          duration: 0.8,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: ".feat",
-            start: "top 60%",
-            toggleActions: toggle,
+            trigger: ".projects-intro",
+            start: "top 90%",
+            toggleActions: "play reverse play reverse",
           },
-        },
+        }
       );
 
-      /* ---- 3) Web projects: pinned horizontal scroll ---- */
-      const track = root.current.querySelector(".h-track");
-      const distance = () => track.scrollWidth - window.innerWidth;
-
-      const hTween = gsap.to(track, {
-        x: () => -distance(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".h-section",
-          start: "top top",
-          end: () => "+=" + distance(),
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      // progress bar
-      gsap.fromTo(
-        ".h-bar",
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          ease: "none",
-          transformOrigin: "left center",
-          scrollTrigger: {
-            trigger: ".h-section",
-            start: "top top",
-            end: () => "+=" + distance(),
-            scrub: true,
-            invalidateOnRefresh: true,
-          },
-        },
-      );
-
-      gsap.utils.toArray(".h-card").forEach((card) => {
-        // card scales/fades in as it enters the screen
+      // Category heading animation
+      gsap.utils.toArray(".project-category").forEach((section) => {
         gsap.fromTo(
-          card,
-          { opacity: 0.25, scale: 0.88, rotate: 2 },
-          {
-            opacity: 1,
-            scale: 1,
-            rotate: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              containerAnimation: hTween,
-              start: "left 95%",
-              end: "left 55%",
-              scrub: true,
-            },
-          },
-        );
-        // image parallax inside the card
-        gsap.fromTo(
-          card.querySelector(".p-img"),
-          { xPercent: -8 },
-          {
-            xPercent: 8,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              containerAnimation: hTween,
-              start: "left right",
-              end: "right left",
-              scrub: true,
-            },
-          },
-        );
-      });
-
-      /* ---- 4) E-commerce: staggered rise + mask reveal ---- */
-      gsap.utils.toArray(".e-card").forEach((card, i) => {
-        gsap.fromTo(
-          card,
-          { y: 120, opacity: 0, rotate: i % 2 ? -3 : 3 },
+          section.querySelectorAll(".category-heading"),
+          { y: 25, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            rotate: 0,
-            duration: 1,
+            duration: 0.65,
             ease: "power3.out",
             scrollTrigger: {
-              trigger: card,
-              start: "top 88%",
-              toggleActions: toggle,
+              trigger: section,
+              start: "top 90%",
+              toggleActions: "play reverse play reverse",
             },
-          },
-        );
-        gsap.fromTo(
-          card.querySelector(".img-mask"),
-          { clipPath: "inset(0% 0% 100% 0%)" },
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
-            duration: 1.2,
-            ease: "power4.inOut",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 88%",
-              toggleActions: toggle,
-            },
-          },
-        );
-        gsap.fromTo(
-          card.querySelector(".p-img"),
-          { yPercent: -10 },
-          {
-            yPercent: 10,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 1,
-            },
-          },
+          }
         );
       });
 
-      /* ---- Background glow parallax ---- */
-      gsap.to(".p-glow", {
-        yPercent: 60,
-        scale: 1.3,
+      // Project cards reveal
+      gsap.utils.toArray(".project-card").forEach((card) => {
+        gsap.fromTo(
+          card,
+          { y: 25, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.65,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 94%",
+              toggleActions: "play reverse play reverse",
+            },
+          }
+        );
+      });
+
+      // Subtle background glow
+      gsap.to(".projects-glow", {
+        yPercent: 20,
+        xPercent: 8,
         ease: "none",
         scrollTrigger: {
           trigger: root.current,
@@ -412,128 +286,108 @@ export const Projects = () => {
       });
     }, root);
 
-    // recalc after images load so pin distances are correct
-    const refresh = () => ScrollTrigger.refresh();
-    window.addEventListener("load", refresh);
-
-    return () => {
-      window.removeEventListener("load", refresh);
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
+
+  let projectNumber = 0;
 
   return (
     <section
       ref={root}
-      className="relative w-full overflow-hidden bg-[#0a0a0a] text-white"
+      id="projects"
+      className="relative isolate w-full overflow-hidden bg-[#0a0a0a] px-5 py-12 text-white sm:px-8 sm:py-14 lg:px-12 lg:py-16"
     >
-      {/* Glow */}
+      {/* Background glow */}
       <div
-        className="p-glow pointer-events-none absolute -left-40 top-0 h-[900px] w-[900px] rounded-full opacity-50"
+        className="projects-glow pointer-events-none absolute -left-40 top-20 -z-10 h-[450px] w-[450px] rounded-full opacity-40 sm:h-[600px] sm:w-[600px]"
         style={{
           background:
-            "radial-gradient(circle, rgba(255,255,255,0.14) 0%, transparent 65%)",
+            "radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.035) 45%, transparent 70%)",
         }}
       />
 
-      {/* ============ Intro title ============ */}
-      <div className="relative px-6 pb-10 pt-24 sm:px-10 lg:px-16">
-        <p className="mb-2 text-sm uppercase tracking-[0.3em] text-white/50">
-          Portfolio
-        </p>
-        <h2 className="reveal-title text-6xl font-extrabold uppercase leading-none sm:text-8xl lg:text-9xl">
-          <Split text="Selected Work" />
-        </h2>
-      </div>
+      <div className="mx-auto w-full max-w-7xl">
 
-      {/* ============ Featured: Green Flyers (API) ============ */}
-      <div className="feat relative px-6 py-16 sm:px-10 lg:px-16">
-        <div className="feat-mask overflow-hidden rounded-3xl">
-          <a
-            href={featured.url}
-            target="_blank"
-            rel="noreferrer"
-            className="block aspect-[16/8] w-full overflow-hidden"
-          >
-            <img
-              src={featured.img}
-              alt={featured.title}
-              className="feat-img h-full w-full object-cover"
-            />
-          </a>
-        </div>
+        {/* Intro */}
+        <header className="projects-intro mb-10 sm:mb-12 lg:mb-14">
+          <p className="mb-2 text-xs font-medium uppercase tracking-[0.22em] text-white/50 sm:text-sm">
+            Portfolio / Selected Work
+          </p>
 
-        <div className="feat-info mt-8 grid gap-4 lg:grid-cols-[1fr_1fr]">
-          <div>
-            <span className="inline-block rounded-full border border-white/70 px-4 py-1 text-xs uppercase tracking-widest">
-              Featured · {featured.tag}
-            </span>
-            <h3 className="mt-4 text-5xl font-extrabold sm:text-7xl">
-              <Split text={featured.title} />
-            </h3>
+          <h2 className="text-3xl font-bold uppercase tracking-tight sm:text-4xl lg:text-5xl">
+            Projects<span className="text-white/40">.</span>
+          </h2>
+
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/65 sm:text-base sm:leading-7">
+            A collection of websites across corporate, healthcare,
+            biotechnology, API integration, and e-commerce.
+          </p>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <a
+                key={category.id}
+                href={`#category-${category.id}`}
+                className="rounded-full border border-white/20 px-3 py-2 text-xs text-white/75 transition-colors hover:border-white hover:bg-white hover:text-black sm:text-sm"
+              >
+                {category.title}
+              </a>
+            ))}
           </div>
-          <div className="flex flex-col justify-end gap-4">
-            <p className="text-lg text-white/70 sm:text-2xl">{featured.desc}</p>
-            <a
-              href={featured.url}
-              target="_blank"
-              rel="noreferrer"
-              className="w-fit border-b border-white pb-1 text-lg hover:opacity-70"
+        </header>
+
+        {/* Category-wise project grids */}
+        <div className="space-y-12 sm:space-y-14 lg:space-y-16">
+          {categories.map((category) => (
+            <section
+              key={category.id}
+              id={`category-${category.id}`}
+              className="project-category scroll-mt-8"
             >
-              Visit website ↗
-            </a>
-          </div>
-        </div>
-      </div>
+              {/* Category heading */}
+              <div className="category-heading mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-white/15 pb-3 sm:mb-6">
+                <div>
+                  <h3 className="text-xl font-semibold tracking-tight sm:text-2xl lg:text-3xl">
+                    {category.title}
+                  </h3>
 
-      {/* ============ Web projects: horizontal scroll ============ */}
-      <div className="h-section relative flex h-screen flex-col justify-center">
-        <div className="mb-8 px-6 sm:px-10 lg:px-16">
-          <h3 className="reveal-title text-4xl font-extrabold uppercase sm:text-6xl">
-            <Split text="Web Projects" />
-          </h3>
-        </div>
+                  <p className="mt-1 text-sm text-white/50 sm:text-base">
+                    {category.subtitle}
+                  </p>
+                </div>
 
-        <div className="h-track flex w-max gap-8 px-6 sm:px-10 lg:px-16">
-          {webProjects.map((p, i) => (
-            <Card
-              key={p.title}
-              p={p}
-              index={i}
-              cardClass="h-card"
-              className="w-[82vw] sm:w-[55vw] lg:w-[38vw]"
-            />
+                <span className="text-sm text-white/50 sm:text-base">
+                  {String(category.projects.length).padStart(2, "0")} Projects
+                </span>
+              </div>
+
+              {/* Responsive grid */}
+              <div className="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-8 lg:grid-cols-3 lg:gap-x-7 lg:gap-y-9">
+                {category.projects.map((project) => {
+                  const currentIndex = projectNumber++;
+
+                  return (
+                    <ProjectCard
+                      key={project.title}
+                      project={project}
+                      index={currentIndex}
+                    />
+                  );
+                })}
+              </div>
+            </section>
           ))}
         </div>
 
-        {/* progress bar */}
-        <div className="absolute bottom-8 left-6 right-6 h-[2px] bg-white/15 sm:left-10 sm:right-10 lg:left-16 lg:right-16">
-          <div className="h-bar h-full origin-left bg-white" />
-        </div>
-      </div>
-
-      {/* ============ E-commerce ============ */}
-      <div className="relative px-6 py-24 sm:px-10 lg:px-16">
-        <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
-          <h3 className="reveal-title text-4xl font-extrabold uppercase sm:text-6xl lg:text-8xl">
-            <Split text="E-commerce" />
-          </h3>
-          
-        </div>
-
-        <div className="grid gap-10 md:grid-cols-2">
-          {ecommerce.map((p, i) => (
-            <Card
-              key={p.title}
-              p={p}
-              index={i}
-              cardClass="e-card"
-              aspect="aspect-[4/3]"
-              className={i % 2 ? "md:mt-24" : ""}
-            />
-          ))}
-        </div>
+        {/* Footer */}
+        <footer className="mt-12 border-t border-white/15 pt-5 sm:mt-14 lg:mt-16">
+          <p className="text-sm text-white/50 sm:text-base">
+            Designed with purpose. Built for the web.
+          </p>
+        </footer>
       </div>
     </section>
   );
 };
+
+export default Projects;

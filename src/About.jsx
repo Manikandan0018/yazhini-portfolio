@@ -1,3 +1,4 @@
+
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -5,19 +6,22 @@ import { Split } from "./utils/Split";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ================= DATA (from your resume) ================= */
+/* ================= DATA FROM RESUME ================= */
+
 const categories = [
-  "HTML & CSS",
-  "JavaScript",
-  "Java & Android",
-  "SQL & Firebase",
+  "PHP & Laravel",
+  "CodeIgniter & REST APIs",
+  "MySQL & SQL",
+  "HTML, CSS & JavaScript",
+  "CMS & Admin Panels",
+  "E-commerce Websites",
 ];
 
 const links = [
   ["Email:", "yazhini0304@outlook.com"],
   ["Phone:", "+91 90258 52241"],
   ["Location:", "Puducherry, India"],
-  ["Education:", "MCA, 2025 · CGPA 9.32"],
+  ["Education:", "MCA · CGPA 9.32"],
 ];
 
 export const About = () => {
@@ -25,107 +29,89 @@ export const About = () => {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      const toggle = "play reverse play reverse"; // scroll down = play, scroll up = reverse
+      const toggle = "play reverse play reverse";
 
-      // Headings: letters rise one by one
+      // Heading animations
       gsap.utils.toArray(".reveal-title").forEach((title) => {
         gsap.fromTo(
           title.querySelectorAll(".letter"),
-          { y: 60, opacity: 0, rotate: 8 },
+          { y: 35, opacity: 0, rotate: 5 },
           {
             y: 0,
             opacity: 1,
             rotate: 0,
-            duration: 0.8,
-            stagger: 0.03,
-            ease: "back.out(1.6)",
-            scrollTrigger: {
-              trigger: title,
-              start: "top 85%",
-              toggleActions: toggle,
-            },
-          },
-        );
-      });
-
-      // Paragraphs: soft fade up
-      gsap.utils.toArray(".reveal-text").forEach((p) => {
-        gsap.fromTo(
-          p,
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.9,
+            duration: 0.7,
+            stagger: 0.025,
             ease: "power3.out",
             scrollTrigger: {
-              trigger: p,
+              trigger: title,
               start: "top 88%",
               toggleActions: toggle,
             },
-          },
+          }
         );
       });
 
-      // Big statement: letters wave in
+      // Paragraph animations
+      gsap.utils.toArray(".reveal-text").forEach((p) => {
+        gsap.fromTo(
+          p,
+          { y: 25, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: p,
+              start: "top 90%",
+              toggleActions: toggle,
+            },
+          }
+        );
+      });
+
+      // Main statement animation
       gsap.fromTo(
         ".statement .letter",
-        { y: 80, opacity: 0 },
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.9,
-          stagger: { each: 0.02, from: "start" },
-          ease: "power4.out",
-          scrollTrigger: {
-            trigger: ".statement",
-            start: "top 85%",
-            toggleActions: toggle,
-          },
-        },
-      );
-
-      // Links: slide in one by one
-      gsap.fromTo(
-        ".link-row",
-        { x: -40, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.7,
-          stagger: 0.12,
+          duration: 0.8,
+          stagger: 0.02,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: ".links",
-            start: "top 90%",
+            trigger: ".statement",
+            start: "top 88%",
             toggleActions: toggle,
           },
-        },
+        }
       );
 
-      // Buttons: slide in from the right
+      // Skill buttons animation
       gsap.fromTo(
         ".side-btn",
-        { x: 120, opacity: 0 },
+        { x: 35, opacity: 0 },
         {
           x: 0,
           opacity: 1,
-          duration: 0.8,
-          stagger: 0.12,
+          duration: 0.6,
+          stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: ".side-btns",
-            start: "top 85%",
+            start: "top 90%",
             toggleActions: toggle,
           },
-        },
+        }
       );
 
-      // Background glow: parallax
+      // Background glow parallax
       gsap.to(".glow", {
-        yPercent: 40,
-        xPercent: -15,
-        scale: 1.3,
+        yPercent: 30,
+        xPercent: -10,
+        scale: 1.2,
         ease: "none",
         scrollTrigger: {
           trigger: root.current,
@@ -135,9 +121,9 @@ export const About = () => {
         },
       });
 
-      // Content drifts at a different speed than the scroll
+      // Content parallax
       gsap.to(".content", {
-        yPercent: -6,
+        yPercent: -3,
         ease: "none",
         scrollTrigger: {
           trigger: root.current,
@@ -151,13 +137,14 @@ export const About = () => {
     return () => ctx.revert();
   }, []);
 
-  /* ---------- Button hover ---------- */
+  /* ================= BUTTON HOVER ================= */
+
   const onEnter = (e) =>
     gsap.to(e.currentTarget, {
-      scale: 1.08,
+      scale: 1.04,
       backgroundColor: "#ffffff",
       color: "#000000",
-      duration: 0.3,
+      duration: 0.25,
       ease: "power2.out",
     });
 
@@ -166,7 +153,7 @@ export const About = () => {
       scale: 1,
       backgroundColor: "rgba(255,255,255,0)",
       color: "#ffffff",
-      duration: 0.3,
+      duration: 0.25,
       ease: "power2.out",
     });
 
@@ -174,82 +161,92 @@ export const About = () => {
     <section
       ref={root}
       id="about"
-      className="relative flex min-h-screen w-full items-center overflow-hidden bg-[#0a0a0a] px-6 py-10 text-white sm:px-10 lg:px-16"
+      className="relative flex min-h-screen w-full items-center overflow-hidden bg-[#0a0a0a] px-5 py-10 text-white sm:px-8 lg:px-12"
     >
       {/* Background glow */}
       <div
-        className="glow pointer-events-none absolute -right-40 -top-40 h-[900px] w-[900px] rounded-full opacity-60"
+        className="glow pointer-events-none absolute -right-32 -top-32 h-[400px] w-[400px] rounded-full opacity-50 sm:h-[600px] sm:w-[600px]"
         style={{
           background:
-            "radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 40%, transparent 70%)",
+            "radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.04) 40%, transparent 70%)",
         }}
       />
 
-      <div className="content relative grid min-h-[calc(100vh-5rem)] w-full grid-cols-1 gap-10 lg:grid-cols-[1fr_auto]">
-        {/* Left: text */}
-        <div className="flex flex-col justify-between gap-8">
+      {/* Main container */}
+      <div className="content relative mx-auto grid w-full max-w-7xl grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_290px] lg:items-center lg:gap-12">
+
+        {/* Left content */}
+        <div className="flex min-w-0 flex-col gap-7">
+
+          {/* About Me */}
           <div>
-            <h2 className="reveal-title mb-3 text-4xl font-extrabold uppercase sm:text-5xl lg:text-6xl">
+            <h2 className="reveal-title mb-3 text-3xl font-bold uppercase tracking-tight sm:text-4xl">
               <Split text="About Me" />
             </h2>
-            <p className="reveal-text text-justify text-base leading-snug text-white/80 sm:text-xl lg:text-2xl xl:text-3xl">
-              I am Yazhini Saravanan, an MCA graduate from Puducherry
-              Technological University with a CGPA of 9.32, and a B.Sc. in
-              Computer Science. I am a fresher looking for a responsible role in
-              a reputable organization where I can use my technical and
-              interpersonal skills to contribute to its growth while continuing
-              to learn.
+
+            <p className="reveal-text text-justify text-base leading-7 text-white/80 sm:text-lg sm:leading-8">
+              I am Yazhini Saravanan, a PHP Developer with one year of
+              professional experience at Jayam Web Solutions Pvt. Ltd.
+              I hold an MCA from Puducherry Technological University
+              with a CGPA of 9.32, along with a B.Sc. in Computer Science.
+              I specialize in developing and maintaining web applications
+              using PHP, Laravel, and CodeIgniter, with a focus on
+              reliable backend functionality and practical web solutions.
             </p>
           </div>
 
+          {/* What I Do */}
           <div>
-            <h2 className="reveal-title mb-3 text-4xl font-extrabold uppercase sm:text-5xl lg:text-6xl">
+            <h2 className="reveal-title mb-3 text-3xl font-bold uppercase tracking-tight sm:text-4xl">
               <Split text="What I Do" />
             </h2>
-            <p className="reveal-text text-justify text-base leading-snug text-white/80 sm:text-xl lg:text-2xl xl:text-3xl">
-              I build responsive, user-friendly web pages with HTML, CSS and
-              JavaScript, and I write backend code in Java for mobile
-              applications. I design and query relational databases with SQL,
-              and I have built a movie ticket booking system on MySQL and an
-              Android app, CGPA Buddy, using Firebase Firestore.
+
+            <p className="reveal-text text-justify text-base leading-7 text-white/80 sm:text-lg sm:leading-8">
+              I develop and maintain dynamic web applications, CMS
+              platforms, admin panels, and e-commerce websites. My work
+              includes REST API integration, MySQL database operations,
+              backend business logic, feature enhancements, and bug fixes.
+              I also work with HTML, CSS, JavaScript, SQL, XAMPP, and
+              Visual Studio Code to build and maintain functional web
+              solutions.
             </p>
           </div>
 
-          <h3 className="statement text-4xl leading-[1.05] sm:text-6xl lg:text-7xl xl:text-8xl">
+          {/* Main statement */}
+          <h3 className="statement text-2xl leading-snug sm:text-3xl lg:text-[2.5rem]">
             <Split
-              text="I build clean, responsive web experiences"
+              text="Building reliable web applications"
               className="font-light"
             />
             <br />
             <Split
-              text="that turn ideas into useful digital products."
+              text="with practical backend solutions."
               className="font-extrabold"
             />
           </h3>
 
-          <div className="links w-full space-y-1 text-lg sm:text-xl lg:text-2xl">
+          {/* Contact information */}
+          <div className="links grid grid-cols-1 gap-3 border-t border-white/15 pt-5 sm:grid-cols-2">
             {links.map(([label, value]) => (
               <div
                 key={label}
-                className="link-row grid w-full max-w-4xl grid-cols-[130px_1fr] gap-4 sm:grid-cols-[160px_1fr]"
+                className="link-row flex min-w-0 flex-wrap items-start gap-x-2 text-sm sm:text-base"
               >
-                <span className="font-semibold">{label}</span>
-                <span className="break-all text-right text-white/80">
-                  {value}
-                </span>
+                <span className="shrink-0 text-white/50">{label}</span>
+                <span className="break-words text-white/90">{value}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right: skill buttons */}
-        <div className="side-btns flex flex-row flex-wrap gap-4 lg:flex-col lg:justify-end">
+        {/* Right: Technical skills */}
+        <div className="side-btns mx-auto flex w-full max-w-[400px] flex-row flex-wrap justify-center gap-3 lg:max-w-none lg:flex-col lg:justify-center">
           {categories.map((item) => (
             <span
               key={item}
               onMouseEnter={onEnter}
               onMouseLeave={onLeave}
-              className="side-btn cursor-pointer rounded-full border border-white/80 px-10 py-4 text-center text-lg text-white lg:w-80 lg:text-xl"
+              className="side-btn cursor-default rounded-full border border-white/40 px-4 py-2.5 text-center text-sm text-white transition-colors sm:px-5 sm:py-3 sm:text-base lg:w-full"
             >
               {item}
             </span>
@@ -259,3 +256,5 @@ export const About = () => {
     </section>
   );
 };
+
+export default About;
